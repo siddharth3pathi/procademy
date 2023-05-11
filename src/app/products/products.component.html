@@ -1,0 +1,56 @@
+<app-search (searchTextChanged)="onSearchTextEntered($event)"></app-search>
+<app-filter
+  [all]="getTotalProducts()"
+  [available]="getAvailableProducts()"
+  [notAvailable]="getNotAvailableProducts()"
+  (filterRadioButtonSelectionChanged)="onFilterRadioButtonChanged($event)"
+></app-filter>
+
+<ng-container *ngFor="let item of products">
+  <!-- productCountRadioButton === 'All' || productCountRadioButton === item.available -->
+  <div *ngIf="searchText==='' || item.name.toLowerCase().includes(searchText)">
+    <div
+      class="product-container"
+      [ngStyle]="{
+        backgroundColor: item.available === 'Available' ? '#d5f5e3' : '#fadbd8'
+      }"
+    >
+      <div class="image-container">
+        <img
+          src="{{ item.image }}"
+          alt=""
+          style="max-height: 50px; max-width: 50px"
+        />
+      </div>
+      <div>
+        <div class="name-container">
+          <h6>{{ item.name }}</h6>
+        </div>
+        <div class="detail-container">
+          <div
+            class="details"
+            [ngStyle]="{
+              color: item.available === 'Available' ? 'Green' : 'red'
+            }"
+          >
+            {{ item.available }}
+          </div>
+          <div class="details"><b>Price:</b>${{ item.price }}</div>
+          <div class="details"><b>Color:</b>{{ item.color }}</div>
+        </div>
+      </div>
+      <div class="options">
+        <button class="btn btn-success">Show details</button>
+        <button
+          class="btn btn-warning"
+          *ngIf="item.available === 'Available'; else notifyMe"
+        >
+          Buy now
+        </button>
+        <ng-template #notifyMe>
+          <button class="btn btn-danger">Notify Me</button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</ng-container>
